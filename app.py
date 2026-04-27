@@ -37,13 +37,11 @@ if aba == "Diagnóstico Descritivo":
     st.markdown(texto_intro())
     st.markdown(texto_nota_metodologica())
 
-    # Métricas gerais
     col1, col2, col3 = st.columns(3)
     col1.metric("Total de Registros", f"{len(df):,}")
     col2.metric("Categorias", df['CT_LOCALIDADE'].nunique())
     col3.metric("Unidades da Federação", df['SIGLA_UF'].nunique())
 
-    # Frequência e Pareto
     st.subheader("Distribuição por Categoria")
     st.markdown(texto_pareto())
 
@@ -57,7 +55,6 @@ if aba == "Diagnóstico Descritivo":
     )
     st.pyplot(fig_pareto, use_container_width=True)
 
-    # Contingência Categoria × Grande Região
     st.subheader("Distribuição Regional das Categorias")
     st.markdown(texto_contingencia())
 
@@ -70,7 +67,7 @@ if aba == "Diagnóstico Descritivo":
     st.dataframe(pct_linha.style.format("{:.1f}%"), height=600)
 
 # ================================================================
-# Aba 2: Distribuição Espacial (mapas pré-renderizados)
+# Aba 2: Distribuição Espacial
 # ================================================================
 elif aba == "Distribuição Espacial":
     st.header("Distribuição Espacial das Localidades")
@@ -81,8 +78,8 @@ elif aba == "Distribuição Espacial":
     garantindo desempenho estável sem estouro de memória.
     """)
 
-    # ----- Mapa de Cluster (todos os pontos) -----
-    st.subheader("Mapa de Pontos (Cluster – totalidade dos pontos)")
+    # ----- Mapa de Cluster -----
+    st.subheader("🗺️ Mapa de Pontos (todas as localidades)")
 
     @st.cache_resource
     def carregar_html_mapa():
@@ -91,14 +88,24 @@ elif aba == "Distribuição Espacial":
         resp.raise_for_status()
         return resp.text
 
-    try:
-        html_mapa = carregar_html_mapa()
-        st.components.v1.html(html_mapa, height=600, scrolling=True)
-    except Exception as e:
-        st.warning(f"⚠️ Mapa de cluster ainda não disponível. Execute o notebook de geração no Colab.\nErro: {e}")
+    with st.spinner("Carregando mapa de cluster… (pode levar alguns segundos)"):
+        try:
+            html_mapa = carregar_html_mapa()
+            # Altura fixa 800 px
+            st.components.v1.html(html_mapa, height=800, scrolling=True)
+        except Exception as e:
+            st.warning(f"⚠️ Mapa de cluster não disponível.\nErro: {e}")
 
-    # ----- Mapas de Calor por Categoria -----
-    st.subheader("Mapa de Calor por Categoria")
+    # Botão para abrir em tela cheia (nova aba)
+    st.markdown("""
+    <a href="https://github.com/renatopradolima/Localidades-CD2030/releases/download/mapas-v1/mapa_cluster.html" 
+       target="_blank" style="text-decoration:none;">
+       <button style="padding:8px 16px; font-size:14px; cursor:pointer;">🔲 Abrir mapa em tela cheia</button>
+    </a>
+    """, unsafe_allow_html=True)
+
+    # ----- Mapas de Calor -----
+    st.subheader("🔥 Mapas de Calor por Categoria")
     categorias_disponiveis = sorted([
         f.replace('.html', '').replace('_', ' ')
         for f in os.listdir("resultados/mapas")
@@ -114,16 +121,18 @@ elif aba == "Distribuição Espacial":
         calor_path = os.path.join("resultados/mapas", nome_arquivo)
 
         if os.path.exists(calor_path):
-            altura = st.slider("Altura do mapa (px)", min_value=400, max_value=1200, value=750, step=50)
             with open(calor_path, "r", encoding="utf-8") as f:
-                st.components.v1.html(f.read(), height=altura, scrolling=True)
+                st.components.v1.html(f.read(), height=800, scrolling=True)
+            # Botão tela cheia
+            st.markdown(f"""
+            <a href="{calor_path}" target="_blank" style="text-decoration:none;">
+               <button style="padding:8px 16px; font-size:14px; cursor:pointer;">🔲 Abrir mapa de calor em tela cheia</button>
+            </a>
+            """, unsafe_allow_html=True)
         else:
             st.warning(f"Mapa de calor para '{categoria_escolhida}' não encontrado.")
     else:
         st.warning("⚠️ Nenhum mapa de calor encontrado. Execute o notebook de geração no Colab.")
 
-# ================================================================
-# Rodapé lateral
-# ================================================================
 st.sidebar.markdown("---")
 st.sidebar.info("Grupo de Trabalho Localidades • IBGE • Censo 2030")
