@@ -83,7 +83,7 @@ elif aba == "Distribuição Espacial":
 
     @st.cache_resource
     def carregar_html_mapa():
-        url = "https://github.com/renatopradolima/Localidades-CD2030/releases/download/mapas-v1/mapa_cluster.html"
+        url = "https://github.com/renatopradolima/Localidades-CD2030/releases/download/mapas-v2/mapa_cluster.html"
         resp = requests.get(url)
         resp.raise_for_status()
         return resp.text
