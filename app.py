@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import requests
 from src.dados import carregar_dados
 from src.graficos import criar_pareto, criar_barras_empilhadas
 from src.interpretacoes import (
@@ -15,7 +16,7 @@ st.set_page_config(page_title="Localidades CD2030", layout="wide")
 st.title("🔎 Localidades do Brasil – Censo 2022")
 st.markdown("Dashboard de diagnóstico para o Grupo de Trabalho de Localidades")
 
-# Carregar dados (cache) – agora é um DataFrame leve, sem geometria
+# Carregar dados (cache) – DataFrame leve, sem geometria
 with st.spinner("Carregando dados..."):
     df = carregar_dados()
 
@@ -82,12 +83,19 @@ elif aba == "Distribuição Espacial":
 
     # ----- Mapa de Cluster (todos os pontos) -----
     st.subheader("Mapa de Pontos (Cluster – totalidade dos pontos)")
-    cluster_path = "resultados/mapas/mapa_cluster.html"
-    if os.path.exists(cluster_path):
-        with open(cluster_path, "r", encoding="utf-8") as f:
-            st.components.v1.html(f.read(), height=600)
-    else:
-        st.warning("⚠️ Mapa de cluster ainda não disponível. Execute o notebook de geração no Colab.")
+
+    @st.cache_resource
+    def carregar_html_mapa():
+        url = "https://github.com/renatopradolima/Localidades-CD2030/releases/download/mapas-v1/mapa_cluster.html"
+        resp = requests.get(url)
+        resp.raise_for_status()
+        return resp.text
+
+    try:
+        html_mapa = carregar_html_mapa()
+        st.components.v1.html(html_mapa, height=600)
+    except Exception as e:
+        st.warning(f"⚠️ Mapa de cluster ainda não disponível. Execute o notebook de geração no Colab.\nErro: {e}")
 
     # ----- Mapas de Calor por Categoria -----
     st.subheader("Mapa de Calor por Categoria")
