@@ -96,14 +96,7 @@ elif aba == "Distribuição Espacial":
         except Exception as e:
             st.warning(f"⚠️ Mapa de cluster não disponível.\nErro: {e}")
 
-    # Botão para abrir em tela cheia (nova aba)
-    st.markdown("""
-    <a href="https://github.com/renatopradolima/Localidades-CD2030/releases/download/mapas-v2/mapa_cluster.html" 
-       target="_blank" style="text-decoration:none;">
-       <button style="padding:8px 16px; font-size:14px; cursor:pointer;">🔲 Abrir mapa em tela cheia</button>
-    </a>
-    """, unsafe_allow_html=True)
-
+    
     # ----- Mapas de Calor -----
     st.subheader("🔥 Mapas de Calor por Categoria")
     categorias_disponiveis = sorted([
@@ -123,12 +116,7 @@ elif aba == "Distribuição Espacial":
         if os.path.exists(calor_path):
             with open(calor_path, "r", encoding="utf-8") as f:
                 st.components.v1.html(f.read(), height=800, scrolling=True)
-            # Botão tela cheia
-            st.markdown(f"""
-            <a href="{calor_path}" target="_blank" style="text-decoration:none;">
-               <button style="padding:8px 16px; font-size:14px; cursor:pointer;">🔲 Abrir mapa de calor em tela cheia</button>
-            </a>
-            """, unsafe_allow_html=True)
+            
         else:
             st.warning(f"Mapa de calor para '{categoria_escolhida}' não encontrado.")
     else:
