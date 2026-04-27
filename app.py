@@ -93,7 +93,7 @@ elif aba == "Distribuição Espacial":
 
     try:
         html_mapa = carregar_html_mapa()
-        st.components.v1.html(html_mapa, height=600)
+        st.components.v1.html(html_mapa, height=600, scrolling=True)
     except Exception as e:
         st.warning(f"⚠️ Mapa de cluster ainda não disponível. Execute o notebook de geração no Colab.\nErro: {e}")
 
@@ -114,8 +114,9 @@ elif aba == "Distribuição Espacial":
         calor_path = os.path.join("resultados/mapas", nome_arquivo)
 
         if os.path.exists(calor_path):
+            altura = st.slider("Altura do mapa (px)", min_value=400, max_value=1200, value=750, step=50)
             with open(calor_path, "r", encoding="utf-8") as f:
-                st.components.v1.html(f.read(), height=600)
+                st.components.v1.html(f.read(), height=altura, scrolling=True)
         else:
             st.warning(f"Mapa de calor para '{categoria_escolhida}' não encontrado.")
     else:
