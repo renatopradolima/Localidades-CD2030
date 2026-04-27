@@ -98,7 +98,7 @@ elif aba == "Distribuição Espacial":
 
     # Botão para abrir em tela cheia (nova aba)
     st.markdown("""
-    <a href="https://github.com/renatopradolima/Localidades-CD2030/releases/download/mapas-v1/mapa_cluster.html" 
+    <a href="https://github.com/renatopradolima/Localidades-CD2030/releases/download/mapas-v2/mapa_cluster.html" 
        target="_blank" style="text-decoration:none;">
        <button style="padding:8px 16px; font-size:14px; cursor:pointer;">🔲 Abrir mapa em tela cheia</button>
     </a>
