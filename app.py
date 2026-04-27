@@ -74,31 +74,31 @@ if aba == "Diagnóstico Descritivo":
 # =====================================================================
 # Aba 2: Distribuição Espacial (a ser preenchida com os mapas HTML)
 # =====================================================================
+
 elif aba == "Distribuição Espacial":
     st.header("Distribuição Espacial das Localidades")
-
     st.markdown("""
-    Os mapas abaixo foram gerados a partir de uma amostra de 10.000 pontos
-    e de um mapa de calor com até 50.000 pontos. Eles permitem visualizar
-    a concentração geográfica das localidades e identificar padrões regionais.
+    Os mapas interativos abaixo mostram a localização de **todas** as localidades
+    (sem amostragem) e a densidade por categoria.
     """)
 
-    mapa_pontos = "resultados/mapas/mapa_pontos.html"
-    mapa_calor = "resultados/mapas/mapa_calor.html"
+    # ---- Mapa de pontos com cluster ----
+    st.subheader("Mapa de Pontos (Cluster)")
+    with st.spinner("Gerando mapa de pontos..."):
+        from src.mapas import criar_mapa_cluster
+        mapa_cluster = criar_mapa_cluster(gdf)
+        from streamlit_folium import st_folium
+        st_folium(mapa_cluster, width=1200, height=600)
 
-    if os.path.exists(mapa_pontos):
-        st.subheader("Mapa de Pontos (amostra de 10.000)")
-        with open(mapa_pontos, "r", encoding="utf-8") as f:
-            st.components.v1.html(f.read(), height=600)
-    else:
-        st.warning("Mapa de pontos ainda não foi gerado. Execute o notebook 02.")
+    # ---- Mapas de calor por categoria ----
+    st.subheader("Mapa de Calor por Categoria")
+    categorias = list(gdf['CT_LOCALIDADE'].unique())
+    categoria_escolhida = st.selectbox("Selecione a categoria:", categorias)
 
-    if os.path.exists(mapa_calor):
-        st.subheader("Mapa de Calor (densidade)")
-        with open(mapa_calor, "r", encoding="utf-8") as f:
-            st.components.v1.html(f.read(), height=600)
-    else:
-        st.warning("Mapa de calor ainda não foi gerado. Execute o notebook 02.")
+    from src.mapas import criar_mapa_calor_por_categoria
+    with st.spinner(f"Gerando mapa de calor para '{categoria_escolhida}'..."):
+        mapa_calor = criar_mapa_calor_por_categoria(gdf, categoria_escolhida)
+        st_folium(mapa_calor, width=1200, height=600)
 
 # =====================================================================
 # Rodapé lateral
