@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_47da577c12d289914233cfe98dffa1cf {
+                #map_1ee8d59e79c9d34369c56c4ab0ae06b7 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -51,18 +51,20 @@
 
         
     <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@main/folium/templates/leaflet_heat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
 </head>
 <body>
     
     
-            <div class="folium-map" id="map_47da577c12d289914233cfe98dffa1cf" ></div>
+            <div class="folium-map" id="map_1ee8d59e79c9d34369c56c4ab0ae06b7" ></div>
         
 </body>
 <script>
     
     
-            var map_47da577c12d289914233cfe98dffa1cf = L.map(
-                "map_47da577c12d289914233cfe98dffa1cf",
+            var map_1ee8d59e79c9d34369c56c4ab0ae06b7 = L.map(
+                "map_1ee8d59e79c9d34369c56c4ab0ae06b7",
                 {
                     center: [-15.0, -55.0],
                     crs: L.CRS.EPSG3857,
@@ -74,20 +76,21 @@
 
                 }
             );
+            L.control.scale().addTo(map_1ee8d59e79c9d34369c56c4ab0ae06b7);
 
             
 
         
     
-            var tile_layer_b5e0b7d38e0b9399c6210534f778c9df = L.tileLayer(
-                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+            var tile_layer_3eb9ca7ed17a897719136a3b2ceb6ea9 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
-  "maxZoom": 20,
-  "maxNativeZoom": 20,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
   "noWrap": false,
-  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
-  "subdomains": "abcd",
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
   "detectRetina": false,
   "tms": false,
   "opacity": 1,
@@ -96,10 +99,30 @@
             );
         
     
-            tile_layer_b5e0b7d38e0b9399c6210534f778c9df.addTo(map_47da577c12d289914233cfe98dffa1cf);
+            tile_layer_3eb9ca7ed17a897719136a3b2ceb6ea9.addTo(map_1ee8d59e79c9d34369c56c4ab0ae06b7);
         
     
-            var heat_map_257374cec628a0a3d5a70f470ef7c377 = L.heatLayer(
+            var tile_layer_970ef3a1a45d10527693a0039d8c5768 = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Esri, Maxar, Earthstar Geographics",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_970ef3a1a45d10527693a0039d8c5768.addTo(map_1ee8d59e79c9d34369c56c4ab0ae06b7);
+        
+    
+            var heat_map_f384194b4d59432d3115e6596c512afe = L.heatLayer(
                 [[-3.841264, -32.410856]],
                 {
   "minOpacity": 0.5,
@@ -110,7 +133,44 @@
             );
         
     
-            heat_map_257374cec628a0a3d5a70f470ef7c377.addTo(map_47da577c12d289914233cfe98dffa1cf);
+            heat_map_f384194b4d59432d3115e6596c512afe.addTo(map_1ee8d59e79c9d34369c56c4ab0ae06b7);
+        
+    
+            map_1ee8d59e79c9d34369c56c4ab0ae06b7.fitBounds(
+                [[-3.841264, -32.410856]],
+                {}
+            );
+        
+    
+            L.control.fullscreen(
+                {
+  "position": "topleft",
+  "title": "Full Screen",
+  "titleCancel": "Exit Full Screen",
+  "forceSeparateButton": false,
+}
+            ).addTo(map_1ee8d59e79c9d34369c56c4ab0ae06b7);
+        
+    
+            var layer_control_edccb63e86bce43e7ceaea84d8c907ed_layers = {
+                base_layers : {
+                    "\ud83d\uddfa\ufe0f OpenStreetMap" : tile_layer_3eb9ca7ed17a897719136a3b2ceb6ea9,
+                    "\ud83d\udef0\ufe0f Sat\u00e9lite (ESRI)" : tile_layer_970ef3a1a45d10527693a0039d8c5768,
+                },
+                overlays :  {
+                    "macro_element_f384194b4d59432d3115e6596c512afe" : heat_map_f384194b4d59432d3115e6596c512afe,
+                },
+            };
+            let layer_control_edccb63e86bce43e7ceaea84d8c907ed = L.control.layers(
+                layer_control_edccb63e86bce43e7ceaea84d8c907ed_layers.base_layers,
+                layer_control_edccb63e86bce43e7ceaea84d8c907ed_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": false,
+  "autoZIndex": true,
+}
+            ).addTo(map_1ee8d59e79c9d34369c56c4ab0ae06b7);
+
         
 </script>
 </html>
