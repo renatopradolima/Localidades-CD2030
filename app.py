@@ -44,7 +44,7 @@ if aba == "Diagnóstico Descritivo":
             "Percentual": "{:.2f}%",
             "Percentual_Acumulado": "{:.2f}%"
         }),
-        height=600
+        height=500
     )
     st.pyplot(fig_pareto, use_container_width=True)
 
@@ -58,7 +58,7 @@ if aba == "Diagnóstico Descritivo":
     pct_linha = pd.crosstab(
         gdf['CT_LOCALIDADE'], gdf['NM_GRANDE_REGIAO'], normalize='index'
     ) * 100
-    st.dataframe(pct_linha.style.format("{:.1f}%"), height=600)
+    st.dataframe(pct_linha.style.format("{:.1f}%"), height=500)
 
 st.sidebar.markdown("---")
 st.sidebar.info("Grupo de Trabalho Localidades • IBGE • Censo 2030")
