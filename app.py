@@ -15,9 +15,9 @@ st.set_page_config(page_title="Localidades CD2030", layout="wide")
 st.title("🔎 Localidades do Brasil – Censo 2022")
 st.markdown("Dashboard de diagnóstico para o Grupo de Trabalho de Localidades")
 
-# Carregar dados (cache)
+# Carregar dados (cache) – agora é um DataFrame leve, sem geometria
 with st.spinner("Carregando dados..."):
-    gdf = carregar_dados()
+    df = carregar_dados()
 
 # Barra lateral com navegação
 aba = st.sidebar.radio(
@@ -25,15 +25,12 @@ aba = st.sidebar.radio(
     [
         "Diagnóstico Descritivo",
         "Distribuição Espacial",
-        # "Porte das Localidades",        # próxima aba
-        # "Análise Multivariada (ACM)",   # próxima aba
-        # "Disponibilidade de Serviços",  # próxima aba
     ]
 )
 
-# =====================================================================
+# ================================================================
 # Aba 1: Diagnóstico Descritivo
-# =====================================================================
+# ================================================================
 if aba == "Diagnóstico Descritivo":
     st.header("Diagnóstico Descritivo")
     st.markdown(texto_intro())
@@ -41,15 +38,15 @@ if aba == "Diagnóstico Descritivo":
 
     # Métricas gerais
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total de Registros", f"{len(gdf):,}")
-    col2.metric("Categorias", gdf['CT_LOCALIDADE'].nunique())
-    col3.metric("Unidades da Federação", gdf['SIGLA_UF'].nunique())
+    col1.metric("Total de Registros", f"{len(df):,}")
+    col2.metric("Categorias", df['CT_LOCALIDADE'].nunique())
+    col3.metric("Unidades da Federação", df['SIGLA_UF'].nunique())
 
     # Frequência e Pareto
     st.subheader("Distribuição por Categoria")
     st.markdown(texto_pareto())
 
-    freq, fig_pareto = criar_pareto(gdf)
+    freq, fig_pareto = criar_pareto(df)
     st.dataframe(
         freq.style.format({
             "Percentual": "{:.2f}%",
@@ -63,45 +60,61 @@ if aba == "Diagnóstico Descritivo":
     st.subheader("Distribuição Regional das Categorias")
     st.markdown(texto_contingencia())
 
-    fig_barras = criar_barras_empilhadas(gdf)
+    fig_barras = criar_barras_empilhadas(df)
     st.pyplot(fig_barras, use_container_width=True)
 
     pct_linha = pd.crosstab(
-        gdf['CT_LOCALIDADE'], gdf['NM_GRANDE_REGIAO'], normalize='index'
+        df['CT_LOCALIDADE'], df['NM_GRANDE_REGIAO'], normalize='index'
     ) * 100
     st.dataframe(pct_linha.style.format("{:.1f}%"), height=600)
 
-# =====================================================================
-# Aba 2: Distribuição Espacial (a ser preenchida com os mapas HTML)
-# =====================================================================
-
+# ================================================================
+# Aba 2: Distribuição Espacial (mapas pré-renderizados)
+# ================================================================
 elif aba == "Distribuição Espacial":
     st.header("Distribuição Espacial das Localidades")
     st.markdown("""
-    Os mapas interativos abaixo mostram a localização de **todas** as localidades
-    (sem amostragem) e a densidade por categoria.
+    Os mapas abaixo foram **pré‑renderizados integralmente** a partir do conjunto
+    completo de localidades (sem amostragem). O processamento pesado foi realizado
+    no Google Colab, e o dashboard apenas exibe os arquivos HTML estáticos,
+    garantindo desempenho estável sem estouro de memória.
     """)
 
-    # ---- Mapa de pontos com cluster ----
-    st.subheader("Mapa de Pontos (Cluster)")
-    with st.spinner("Gerando mapa de pontos..."):
-        from src.mapas import criar_mapa_cluster
-        mapa_cluster = criar_mapa_cluster(gdf)
-        from streamlit_folium import st_folium
-        st_folium(mapa_cluster, width=1200, height=600)
+    # ----- Mapa de Cluster (todos os pontos) -----
+    st.subheader("Mapa de Pontos (Cluster – totalidade dos pontos)")
+    cluster_path = "resultados/mapas/mapa_cluster.html"
+    if os.path.exists(cluster_path):
+        with open(cluster_path, "r", encoding="utf-8") as f:
+            st.components.v1.html(f.read(), height=600)
+    else:
+        st.warning("⚠️ Mapa de cluster ainda não disponível. Execute o notebook de geração no Colab.")
 
-    # ---- Mapas de calor por categoria ----
+    # ----- Mapas de Calor por Categoria -----
     st.subheader("Mapa de Calor por Categoria")
-    categorias = list(gdf['CT_LOCALIDADE'].unique())
-    categoria_escolhida = st.selectbox("Selecione a categoria:", categorias)
+    categorias_disponiveis = sorted([
+        f.replace('.html', '').replace('_', ' ')
+        for f in os.listdir("resultados/mapas")
+        if f.endswith('.html') and f != 'mapa_cluster.html'
+    ])
 
-    from src.mapas import criar_mapa_calor_por_categoria
-    with st.spinner(f"Gerando mapa de calor para '{categoria_escolhida}'..."):
-        mapa_calor = criar_mapa_calor_por_categoria(gdf, categoria_escolhida)
-        st_folium(mapa_calor, width=1200, height=600)
+    if categorias_disponiveis:
+        categoria_escolhida = st.selectbox(
+            "Selecione a categoria para visualizar o mapa de calor:",
+            categorias_disponiveis
+        )
+        nome_arquivo = categoria_escolhida.replace(' ', '_') + '.html'
+        calor_path = os.path.join("resultados/mapas", nome_arquivo)
 
-# =====================================================================
+        if os.path.exists(calor_path):
+            with open(calor_path, "r", encoding="utf-8") as f:
+                st.components.v1.html(f.read(), height=600)
+        else:
+            st.warning(f"Mapa de calor para '{categoria_escolhida}' não encontrado.")
+    else:
+        st.warning("⚠️ Nenhum mapa de calor encontrado. Execute o notebook de geração no Colab.")
+
+# ================================================================
 # Rodapé lateral
-# =====================================================================
+# ================================================================
 st.sidebar.markdown("---")
 st.sidebar.info("Grupo de Trabalho Localidades • IBGE • Censo 2030")
