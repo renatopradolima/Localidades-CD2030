@@ -1,14 +1,11 @@
 # src/dados.py
 import streamlit as st
-import geopandas as gpd
 import pandas as pd
 import gdown
 import os
 
-# ID do arquivo no Google Drive (compartilhado publicamente)
 FILE_ID = "133yRXnCrimQgvA1xzQYSfxLIIVJFi5YO"
 
-# Mapeamento UF -> Grande Região (caso necessário)
 SIGLA_PARA_REGIAO = {
     'RO': 'Norte', 'AC': 'Norte', 'AM': 'Norte', 'RR': 'Norte', 'PA': 'Norte',
     'AP': 'Norte', 'TO': 'Norte',
@@ -26,15 +23,16 @@ def carregar_dados():
     url = f"https://drive.google.com/uc?id={FILE_ID}"
     parquet_path = "localidades_2022_processado.parquet"
     
-    # Baixa apenas se o arquivo não existir localmente
     if not os.path.exists(parquet_path):
         with st.spinner("Baixando dados processados do Google Drive..."):
             gdown.download(url, parquet_path, quiet=False)
     
-    gdf = gpd.read_parquet(parquet_path)
+    # Carregar APENAS as colunas necessárias, SEM geometria
+    colunas = ['CT_LOCALIDADE', 'SIGLA_UF', 'NM_GRANDE_REGIAO']
+    df = pd.read_parquet(parquet_path, columns=colunas)
     
-    # Cria coluna de Grande Região se não existir
-    if 'NM_GRANDE_REGIAO' not in gdf.columns:
-        gdf['NM_GRANDE_REGIAO'] = gdf['SIGLA_UF'].map(SIGLA_PARA_REGIAO)
+    # Criar coluna de Grande Região se não existir
+    if 'NM_GRANDE_REGIAO' not in df.columns:
+        df['NM_GRANDE_REGIAO'] = df['SIGLA_UF'].map(SIGLA_PARA_REGIAO)
     
-    return gdf
+    return df
