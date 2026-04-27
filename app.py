@@ -44,7 +44,7 @@ if aba == "Diagnóstico Descritivo":
             "Percentual": "{:.2f}%",
             "Percentual_Acumulado": "{:.2f}%"
         }),
-        height=400
+        height=600
     )
     st.pyplot(fig_pareto, use_container_width=True)
 
