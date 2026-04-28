@@ -3,7 +3,7 @@
 def texto_intro():
     return """
     A base de **Localidades do Brasil** do Censo Demográfico 2022 reúne **96.163 registros**
-    de aglomerados humanos, distribuídos em 12 categorias oficiais. Este número inclui as
+    de aglomerados humanos, distribuídos em 12 categorias. Este número inclui as
     localidades com dupla classificação (ex.: uma comunidade quilombola que também é um
     lugarejo), que são contadas separadamente em cada categoria, totalizando um valor
     superior aos 87.362 pontos únicos disponíveis nos arquivos vetoriais.
