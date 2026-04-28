@@ -52,7 +52,7 @@ if aba == "Diagnóstico Descritivo":
             "Percentual": "{:.2f}%",
             "Percentual_Acumulado": "{:.2f}%"
         }),
-        height=800
+        height=500
     )
     st.pyplot(fig_pareto, use_container_width=True)
 
@@ -65,7 +65,7 @@ if aba == "Diagnóstico Descritivo":
     pct_linha = pd.crosstab(
         df['CT_LOCALIDADE'], df['NM_GRANDE_REGIAO'], normalize='index'
     ) * 100
-    st.dataframe(pct_linha.style.format("{:.1f}%"), height=600)
+    st.dataframe(pct_linha.style.format("{:.1f}%"), height=500)
 
 # ================================================================
 # Aba 2: Distribuição Espacial
