@@ -80,7 +80,7 @@ elif aba == "Distribuição Espacial":
     """)
 
     # ----- Mapa de Cluster -----
-    st.subheader("🗺️ Mapa de Pontos (todas as localidades)")
+    st.subheader("🗺️ Localidades")
 
     @st.cache_resource
     def carregar_html_mapa():
