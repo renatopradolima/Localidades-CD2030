@@ -43,7 +43,7 @@ def texto_pareto():
     **Localidade Quilombola** (8.202; 8,5%), o patamar chega a 75,6%.
 
     A categoria **Outras Localidades** merece atenção especial: ela abrange os aglomerados
-    com 10 a 49 domicílios que não puderam ser setorizados. Seu enorme volume reflete tanto o
+    com até 49 domicílios que não puderam ser setorizados. Seu enorme volume reflete tanto o
     esforço inédito de mapeamento do Censo 2022 quanto a pulverização do povoamento em
     pequenas aglomerações, sobretudo no Nordeste (66,2% do total dessa categoria) e no
     Sudeste (22,7%).
