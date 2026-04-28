@@ -1,5 +1,4 @@
 # app.py
-#principal
 import streamlit as st
 import pandas as pd
 import os
@@ -15,7 +14,7 @@ from src.interpretacoes import (
 
 st.set_page_config(page_title="Localidades CD2030", layout="wide")
 st.title("🔎 Localidades do Brasil – Censo 2022")
-st.markdown("Dashboard de diagnóstico para o Grupo de Trabalho de Localidades")
+st.markdown("Diagnóstico inicial para o Grupo de Trabalho de Localidades")
 
 # Carregar dados (cache) – DataFrame leve, sem geometria
 with st.spinner("Carregando dados..."):
@@ -75,8 +74,7 @@ elif aba == "Distribuição Espacial":
     st.markdown("""
     Os mapas abaixo foram **pré‑renderizados integralmente** a partir do conjunto
     completo de localidades (sem amostragem). O processamento pesado foi realizado
-    no Google Colab, e o dashboard apenas exibe os arquivos HTML estáticos,
-    garantindo desempenho estável sem estouro de memória.
+    no Google Colab, e o dashboard apenas exibe os arquivos HTML estáticos.
     """)
 
     # ----- Mapa de Cluster -----
