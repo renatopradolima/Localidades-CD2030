@@ -36,3 +36,17 @@ def carregar_dados():
         df['NM_GRANDE_REGIAO'] = df['SIGLA_UF'].map(SIGLA_PARA_REGIAO)
     
     return df
+
+# (conteúdo existente de src/dados.py permanece...)
+
+FILE_ID_PORTE = "1cO96z09CbNBzPl2FVlerS03rPt89s4Qz"
+
+@st.cache_data
+def carregar_porte():
+    """Baixa e carrega o dataset de porte das localidades."""
+    url = f"https://drive.google.com/uc?id={FILE_ID_PORTE}"
+    path = "porte_localidades.parquet"
+    if not os.path.exists(path):
+        with st.spinner("Baixando dados de porte..."):
+            gdown.download(url, path, quiet=False)
+    return pd.read_parquet(path)
