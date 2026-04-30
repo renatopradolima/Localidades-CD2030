@@ -26,10 +26,12 @@ aba = st.sidebar.radio(
     "Navegação",
     [
         "Diagnóstico Descritivo",
-        "Distribuição Espacial",
-        "Porte das Localidades",
+        "Distribuição Espacial"
+        
     ]
 )
+
+#"Porte das Localidades",
 
 # ================================================================
 # Aba 1: Diagnóstico Descritivo
