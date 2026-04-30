@@ -41,3 +41,32 @@ def criar_barras_empilhadas(gdf):
     ax.legend(title='Região', bbox_to_anchor=(1.05, 1))
     plt.tight_layout()
     return fig
+
+# (conteúdo existente de src/graficos.py permanece...)
+
+def criar_boxplot_porte(df_porte):
+    """Boxplot de domicílios por categoria (escala log)."""
+    fig, ax = plt.subplots(figsize=(14, 7))
+    sns.boxplot(data=df_porte, x='CT_LOCALIDADE', y='domicilios', ax=ax,
+                order=sorted(df_porte['CT_LOCALIDADE'].unique()))
+    ax.set_yscale('log')
+    ax.set_title('Distribuição do Número de Domicílios por Categoria (escala log)')
+    ax.set_xlabel('Categoria da Localidade')
+    ax.set_ylabel('Domicílios (log)')
+    ax.tick_params(axis='x', rotation=45)
+    plt.tight_layout()
+    return fig
+
+def criar_histogramas_porte(df_porte):
+    """Histogramas de domicílios por categoria principal (exclui outliers)."""
+    categorias = ['Povoado', 'Núcleo Urbano', 'Lugarejo', 'Outras Localidades',
+                  'Localidade Indígena', 'Localidade Quilombola']
+    df_filt = df_porte[df_porte['CT_LOCALIDADE'].isin(categorias)]
+    q99 = df_filt['domicilios'].quantile(0.99)
+    df_filt = df_filt[df_filt['domicilios'] < q99]
+    g = sns.FacetGrid(df_filt, col='CT_LOCALIDADE', col_wrap=3,
+                      sharex=False, sharey=False, height=4)
+    g.map(sns.histplot, 'domicilios', bins=30, kde=True)
+    g.fig.suptitle('Distribuição de Domicílios por Categoria (excluindo outliers)', y=1.02)
+    plt.tight_layout()
+    return g.fig
