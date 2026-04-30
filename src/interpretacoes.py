@@ -86,3 +86,20 @@ def texto_contingencia():
     14,0% do total, mas com enorme peso das Localidades Indígenas. O Sudeste (20,1%) lidera
     nas categorias urbanas. Sul e Centro‑Oeste, juntos, respondem por 11,1% dos registros.
     """
+
+# (conteúdo existente de src/interpretacoes.py permanece...)
+
+def texto_porte():
+    return """
+    ### Qual o tamanho das localidades?
+
+    O boxplot abaixo usa escala logarítmica para evidenciar a enorme variação no número
+    de domicílios entre as categorias. As categorias urbanas (Cidade, Núcleo Urbano) concentram
+    os maiores valores, enquanto Lugarejos e Outras Localidades possuem tipicamente menos
+    de 50 domicílios, coerente com a definição de aglomerados não setorizáveis.
+
+    Os histogramas revelam que muitas localidades (especialmente as rurais) têm distribuições
+    assimétricas, com cauda longa para a direita – alguns povoados, por exemplo, superam
+    300 domicílios, o que os aproxima dos Núcleos Urbanos e justifica uma discussão sobre
+    os limiares de classificação.
+    """
