@@ -1,6 +1,8 @@
 # src/graficos.py
 import matplotlib.pyplot as plt
+import seaborn as sns
 import pandas as pd
+import numpy as np
 
 def criar_pareto(gdf):
     """Gera a tabela de frequências e o gráfico de Pareto."""
@@ -20,7 +22,6 @@ def criar_pareto(gdf):
     ax2.plot(freq['Categoria'], freq['Percentual_Acumulado'], color='red', marker='o')
     ax2.set_ylabel('Percentual Acumulado (%)', color='red')
 
-    # Adicionar rótulos de percentual nas barras
     for i, (qtd, pct) in enumerate(zip(freq['Quantidade'], freq['Percentual'])):
         ax1.text(i, qtd + 50, f"{pct:.1f}%", ha='center', fontsize=8)
 
@@ -42,13 +43,22 @@ def criar_barras_empilhadas(gdf):
     plt.tight_layout()
     return fig
 
-# (conteúdo existente de src/graficos.py permanece...)
 
 def criar_boxplot_porte(df_porte):
-    """Boxplot de domicílios por categoria (escala log)."""
+    """Boxplot de domicílios por categoria (escala log), removendo zeros."""
+    # Filtrar apenas domicílios > 0 para a escala log
+    df_plot = df_porte[df_porte['domicilios'] > 0].copy()
+    if df_plot.empty:
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.text(0.5, 0.5, 'Nenhum valor positivo disponível para o boxplot.',
+                ha='center', va='center', fontsize=12)
+        ax.set_title('Boxplot – Domicílios por Categoria (escala log)')
+        plt.tight_layout()
+        return fig
+    
     fig, ax = plt.subplots(figsize=(14, 7))
-    sns.boxplot(data=df_porte, x='CT_LOCALIDADE', y='domicilios', ax=ax,
-                order=sorted(df_porte['CT_LOCALIDADE'].unique()))
+    sns.boxplot(data=df_plot, x='CT_LOCALIDADE', y='domicilios', ax=ax,
+                order=sorted(df_plot['CT_LOCALIDADE'].unique()))
     ax.set_yscale('log')
     ax.set_title('Distribuição do Número de Domicílios por Categoria (escala log)')
     ax.set_xlabel('Categoria da Localidade')
@@ -57,11 +67,19 @@ def criar_boxplot_porte(df_porte):
     plt.tight_layout()
     return fig
 
+
 def criar_histogramas_porte(df_porte):
     """Histogramas de domicílios por categoria principal (exclui outliers)."""
     categorias = ['Povoado', 'Núcleo Urbano', 'Lugarejo', 'Outras Localidades',
                   'Localidade Indígena', 'Localidade Quilombola']
     df_filt = df_porte[df_porte['CT_LOCALIDADE'].isin(categorias)]
+    if df_filt.empty:
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.text(0.5, 0.5, 'Nenhum dado disponível para os histogramas.',
+                ha='center', va='center', fontsize=12)
+        plt.tight_layout()
+        return fig
+    
     q99 = df_filt['domicilios'].quantile(0.99)
     df_filt = df_filt[df_filt['domicilios'] < q99]
     g = sns.FacetGrid(df_filt, col='CT_LOCALIDADE', col_wrap=3,
